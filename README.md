@@ -2,9 +2,9 @@
 # A database for online commerce
 CptS 451 - WSU Spring 2026
 
-README updates TBD
+## Sprint Documentation 
+[Sprint 1 Report](Documentation/Reports/01_Sprint1_Report.md)
 
 ## Members
-Matthew Hill<br>
-Jodie Butterworth<br>
-Ryan Brombaugh
+Ryan Brombaugh<br>
+Matthew Hill
