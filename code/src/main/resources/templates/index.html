@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org">
+<head>
+    <title>Customer Management</title>
+    <style> 
+        .error { color: red; font-weight: bold; } 
+        .success { color: green; }
+        table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+    </style> 
+</head>
+<body>
+    <h1>Customer Management Portal</h1>
+
+    <!-- System Response / Error Messages -->
+    <div th:if="${message}" th:class="${#strings.contains(message, 'Error') ? 'error' : 'success'}">
+        <p th:text="${message}"></p>
+    </div>
+
+    <!-- INSERT: Add Customer Form -->
+    <h3>Add New Customer</h3>
+    <form th:action="@{/add}" th:object="${newCustomer}" method="post">
+        <input type="hidden" th:field="*{customerId}" />
+
+        <input type="email" th:field="*{customerEmail}" placeholder="Email" required />
+        <input type="text" th:field="*{customerNumber}" placeholder="Phone" required />
+        <input type="password" th:field="*{customerPassword}" placeholder="Password" required />
+        <button type="submit">Add Customer</button>
+
+        <a th:if="*{customerId != null}" th:href="@{/}">Cancel</a>
+    </form>
+
+<!-- RETRIEVE: Display Data -->
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Actions</th> <!-- Header of column -->
+        </tr>
+    </thead>
+    <tbody>
+        <tr th:each="c : ${customers}">
+            <td th:text="${c.customerId}"></td>
+            <td th:text="${c.customerEmail}"></td>
+            <td th:text="${c.customerNumber}"></td>
+            <td>
+                <a th:href="@{'/edit/' + ${c.customerId}}">Edit</a> | 
+                <a th:href="@{'/delete/' + ${c.customerId}}" 
+                   onclick="return confirm('Are you sure?')">Delete</a>
+            </td>
+        </tr>
+    </tbody>
+</table>
