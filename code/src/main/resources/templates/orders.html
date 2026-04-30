@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org">
+<head>
+    <title>Order Management</title>
+    <style>
+        body { font-family: sans-serif; margin: 20px; background-color: #f4f7f6; }
+        table { border-collapse: collapse; width: 100%; background: white; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        th { background-color: #6c757d; color: white; }
+        .status-true { color: green; font-weight: bold; }
+        .status-false { color: orange; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div style="margin-bottom: 20px; display: flex; gap: 15px; align-items: center;">
+        <!-- Standard Back to Home link -->
+        <a th:href="@{/}" style="text-decoration: none; color: #007bff; font-weight: bold;">← Back to Home</a>
+    
+        <!-- Dashboard link - ONLY visible if an Admin is logged in -->
+        <a th:if="${session.loggedInAdmin != null}" 
+            th:href="@{/admin/dashboard}" 
+            style="text-decoration: none; background-color: #343a40; color: white; padding: 5px 15px; border-radius: 4px; font-weight: bold;">
+            Return to Admin Dashboard
+        </a>
+    </div>
+    <h1>Order History</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Order ID</th>
+                <th>Customer Email</th>
+                <th>Total Price</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="o : ${orders}">
+                <td th:text="${o.orderId}"></td>
+                <!-- Accesses the joined Customer table data -->
+                <td th:text="${o.customer.customerEmail}"></td>
+                <td th:text="'$' + ${o.total}"></td>
+                <td th:text="${o.date}"></td>
+                <td>
+                    <span th:class="${o.statusFlag} ? 'status-true' : 'status-false'"
+                          th:text="${o.statusFlag} ? 'Completed' : 'Pending'">
+                    </span>
+                </td>
+                <td>
+                    <a th:href="@{'/orders/toggle/' + ${o.orderId}}" 
+                        style="text-decoration: none; padding: 5px 10px; border-radius: 4px; color: white;"
+                        th:styleappend="${o.statusFlag} ? 'background-color: #6c757d;' : 'background-color: #28a745;'">
+       
+                        <span th:text="${o.statusFlag} ? 'Mark Pending' : 'Mark Completed'"></span>
+                    </a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

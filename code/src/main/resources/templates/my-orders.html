@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org">
+<head>
+    <title>My Orders</title>
+    <style>
+        body { font-family: sans-serif; margin: 20px; background-color: #f4f7f6; }
+        .container { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        th { background-color: #007bff; color: white; }
+        .status-pending { color: orange; font-weight: bold; }
+        .status-shipped { color: green; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div style="display: flex; justify-content: space-between;">
+            <h1>My Order History</h1>
+            <a th:href="@{/shop}" style="text-decoration: none; color: #007bff; font-weight: bold;">← Back to Shop</a>
+        </div>
+
+        <table th:if="${not #lists.isEmpty(myOrders)}">
+            <thead>
+                <tr>
+                    <th>Order ID</th>
+                    <th>Date</th>
+                    <th>Total Price</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="o : ${myOrders}">
+                    <td th:text="${o.orderId}"></td>
+                    <td th:text="${o.date}"></td>
+                    <td th:text="'$' + ${o.total}"></td>
+                    <td th:class="${o.statusFlag} ? 'status-shipped' : 'status-pending'" 
+                        th:text="${o.statusFlag} ? 'Shipped' : 'Pending'"></td>
+                </tr>
+            </tbody>
+        </table>
+        <p th:if="${#lists.isEmpty(myOrders)}">You haven't placed any orders yet.</p>
+    </div>
+</body>
+</html>

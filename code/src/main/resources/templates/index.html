@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org">
+<head>
+    <title>E-Comm Management System</title>
+    <style>
+        body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; background-color: #f4f7f6; }
+        .container { text-align: center; }
+        .card-container { display: flex; gap: 20px; margin-top: 30px; }
+        .card { background: white; padding: 40px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); width: 200px; text-decoration: none; color: #333; transition: transform 0.2s; }
+        .card:hover { transform: translateY(-5px); background-color: #e2e2e2; }
+        .card h2 { margin-top: 0; color: #007bff; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome to the E-Comm Platform!</h1>
+        <p>Please select user type:</p>
+        
+        <div class="card-container">
+            <a th:href="@{/customers}" class="card">
+                <h2>Customer</h2>
+                <p>Log in as a customer</p>
+            </a>
+            
+            <a th:href="@{/admins}" class="card">
+                <h2>Administrator</h2>
+                <p>Log in as a system admin</p>
+            </a>
+        </div>
+    </div>
+</body>
+</html>

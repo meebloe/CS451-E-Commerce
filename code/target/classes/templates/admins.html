@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org">
+<head>
+    <title>Admin Management</title>
+    <style> 
+        body { font-family: sans-serif; margin: 20px; background-color: #f4f7f6; }
+        .error { color: red; font-weight: bold; } 
+        .success { color: green; }
+        .flex-container { display: flex; gap: 20px; margin-bottom: 20px; align-items: flex-start; }
+        .form-container { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); flex: 1; }
+        table { border-collapse: collapse; width: 100%; background: white; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        th { background-color: #343a40; color: white; }
+        .back-link { text-decoration: none; color: #007bff; font-weight: bold; margin-bottom: 10px; display: inline-block; }
+        input { display: block; margin-bottom: 10px; width: 90%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
+        button { padding: 8px 15px; cursor: pointer; background-color: #343a40; color: white; border: none; border-radius: 4px; }
+        button:hover { background-color: #23272b; }
+        .logout-link { color: #dc3545; font-size: 0.9em; text-decoration: none; }
+    </style> 
+</head>
+<body>
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <!-- Standard Back to Home link -->
+        <a th:href="@{/}" style="text-decoration: none; color: #007bff; font-weight: bold;">← Back to Home</a>
+    
+        <!-- Dashboard link - ONLY visible if an Admin is logged in -->
+        <a th:if="${session.loggedInAdmin != null}" 
+            th:href="@{/admin/dashboard}" 
+            style="text-decoration: none; background-color: #343a40; color: white; padding: 5px 15px; border-radius: 4px; font-weight: bold;">
+            Return to Admin Dashboard
+        </a>
+        <a th:if="${session.loggedInAdmin != null}" th:href="@{/logout}" class="logout-link">Logout</a>
+    </div>
+    
+    <h1>Administrator Management</h1>
+
+    <!-- System Response / Error Messages -->
+    <div th:if="${message}" th:class="${#strings.contains(message, 'Error') ? 'error' : 'success'}">
+        <p th:text="${message}"></p>
+    </div>
+
+    <div class="flex-container">
+        <!-- LOGIN FORM: Shown if NO admin is logged in -->
+        <div class="form-container" th:if="${session.loggedInAdmin == null}">
+            <h3>Admin Login</h3>
+            <form th:action="@{/admins/login}" method="post">
+                <input type="email" name="email" placeholder="Admin Email" required />
+                <input type="password" name="password" placeholder="Password" required />
+                <button type="submit">Login to Dashboard</button>
+            </form>
+            <p style="font-size: 0.8em; color: #666; margin-top: 15px;">Note: You must be an authorized administrator to view the management table.</p>
+        </div>
+
+        <!-- REGISTRATION/EDIT FORM: Only shown if logged in OR if editing an existing admin -->
+        <div class="form-container" th:if="${session.loggedInAdmin != null}">
+            <h3 th:text="${newAdmin.adminId != null} ? 'Edit Administrator' : 'Register New Admin'"></h3>
+            <form th:action="@{/admins/add}" th:object="${newAdmin}" method="post">
+                <input type="hidden" th:field="*{adminId}" />
+                <input type="email" th:field="*{adminEmail}" placeholder="Admin Email" required />
+                <input type="text" th:field="*{adminNumber}" placeholder="Employee Phone" required />
+                <input type="password" th:field="*{adminPassword}" placeholder="Password" required />
+                
+                <button type="submit" th:text="${newAdmin.adminId != null} ? 'Update Admin' : 'Register Admin'"></button>
+                <a th:if="*{adminId != null}" th:href="@{/admins}" style="margin-left: 10px; color: #666; text-decoration: none;">Cancel Edit</a>
+            </form>
+        </div>
+    </div>
+
+    <!-- DATA TABLE: Only shown if an admin is logged in -->
+    <div th:if="${session.loggedInAdmin != null}">
+        <h3>Management Table</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Admin ID</th>
+                    <th>Email</th>
+                    <th>Admin Number</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="a : ${admins}">
+                    <td th:text="${a.adminId}"></td>
+                    <td th:text="${a.adminEmail}"></td>
+                    <td th:text="${a.adminNumber}"></td>
+                    <td>
+                        <a th:href="@{'/admins/edit/' + ${a.adminId}}">Edit</a> | 
+                        <a th:href="@{'/admins/delete/' + ${a.adminId}}" 
+                           style="color: red;"
+                           onclick="return confirm('Remove this admin?')">Delete</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</body>
+</html>
